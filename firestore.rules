@@ -1,0 +1,29 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // News Collection Rules
+    match /news/{newsId} {
+      allow read, write: if true;
+    }
+
+    // Registrations Collection Rules
+    match /registrations/{regId} {
+      allow read, write: if true;
+    }
+
+    // Hero Slides Collection Rules
+    match /hero_slides/{slideId} {
+      allow read, write: if true;
+    }
+
+    // Section Backgrounds Collection Rules
+    match /section_backgrounds/{bgId} {
+      allow read, write: if true;
+    }
+
+    // Rewards Collection Rules
+    match /rewards/{rewardId} {
+      allow read, write: if true;
+    }
+  }
+}

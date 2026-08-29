@@ -1,0 +1,6 @@
+{
+  "name": "SPE PEM Akamigas",
+  "description": "Unified Web Portal and Student Chapter Hub for SPE PEM Akamigas with secure database and Admin Panel",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

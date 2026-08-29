@@ -1,0 +1,216 @@
+{
+  "entities": {
+    "News": {
+      "title": "News Article",
+      "description": "A news article posted by the administrator about SPE activities.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Headline of the article"
+        },
+        "date": {
+          "type": "string",
+          "description": "Readable publication date"
+        },
+        "excerpt": {
+          "type": "string",
+          "description": "Short summary of the article"
+        },
+        "fullText": {
+          "type": "string",
+          "description": "Complete rich text content of the news article"
+        },
+        "image": {
+          "type": "string",
+          "description": "URL of the cover image"
+        },
+        "createdAt": {
+          "type": "object",
+          "description": "Firestore server timestamp of creation"
+        }
+      },
+      "required": ["title", "date", "excerpt", "fullText", "createdAt"]
+    },
+    "Registration": {
+      "title": "User Registration",
+      "description": "A form registration or contact submission from a prospective member.",
+      "type": "object",
+      "properties": {
+        "fullName": {
+          "type": "string",
+          "description": "Full name of the registrant"
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address"
+        },
+        "phone": {
+          "type": "string",
+          "description": "Phone number"
+        },
+        "major": {
+          "type": "string",
+          "description": "Academic major / study program"
+        },
+        "studyYear": {
+          "type": "string",
+          "description": "Year of study or entry batch"
+        },
+        "motivation": {
+          "type": "string",
+          "description": "Reason for joining or message content"
+        },
+        "role": {
+          "type": "string",
+          "description": "Applied role, default to Member"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "approved", "rejected"],
+          "description": "Review status of the registration"
+        },
+        "createdAt": {
+          "type": "object",
+          "description": "Firestore server timestamp of registration"
+        }
+      },
+      "required": ["fullName", "email", "phone", "major", "studyYear", "status", "createdAt"]
+    },
+    "HeroSlide": {
+      "title": "Hero Slide",
+      "description": "A slide with a background image shown on the homepage hero section.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Main title"
+        },
+        "accentTitle": {
+          "type": "string",
+          "description": "Highlighted colored text within title"
+        },
+        "subtitle": {
+          "type": "string",
+          "description": "Subtitle"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description paragraph"
+        },
+        "image": {
+          "type": "string",
+          "description": "Background image URL"
+        },
+        "cta1": {
+          "type": "string",
+          "description": "Call to action button 1 text"
+        },
+        "cta1Link": {
+          "type": "string",
+          "description": "Button 1 target anchor ID"
+        },
+        "cta2": {
+          "type": "string",
+          "description": "Call to action button 2 text"
+        },
+        "cta2Link": {
+          "type": "string",
+          "description": "Button 2 target anchor ID"
+        },
+        "createdAt": {
+          "type": "object",
+          "description": "Timestamp"
+        }
+      },
+      "required": ["title", "subtitle", "description", "image", "createdAt"]
+    },
+    "SectionBackground": {
+      "title": "Section Background",
+      "description": "A customized background layout setting for a main homepage/applet section.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "sectionName": {
+          "type": "string"
+        },
+        "backgroundImage": {
+          "type": "string"
+        },
+        "backgroundColor": {
+          "type": "string"
+        },
+        "textColor": {
+          "type": "string"
+        },
+        "overlayOpacity": {
+          "type": "number"
+        },
+        "updatedAt": {
+          "type": "string"
+        }
+      },
+      "required": ["id", "sectionName", "backgroundImage"]
+    },
+    "Reward": {
+      "title": "SPE Reward / Award",
+      "description": "An award, achievement or reward obtained by SPE ITB Chapter.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Name of the award"
+        },
+        "category": {
+          "type": "string",
+          "description": "Category of the award"
+        },
+        "year": {
+          "type": "string",
+          "description": "Year of achievement"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the award"
+        },
+        "image": {
+          "type": "string",
+          "description": "Image of the award"
+        },
+        "createdAt": {
+          "type": "object",
+          "description": "Timestamp"
+        },
+        "isDeleted": {
+          "type": "boolean",
+          "description": "Soft deletion status"
+        }
+      },
+      "required": ["title", "year", "description", "image"]
+    }
+  },
+  "firestore": {
+    "news": {
+      "schema": "News",
+      "description": "Collection of all news articles and press releases"
+    },
+    "registrations": {
+      "schema": "Registration",
+      "description": "Collection of all prospective member registrations"
+    },
+    "hero_slides": {
+      "schema": "HeroSlide",
+      "description": "Collection of all homepage background slides"
+    },
+    "section_backgrounds": {
+      "schema": "SectionBackground",
+      "description": "Collection of customizable background layouts for each main section"
+    },
+    "rewards": {
+      "schema": "Reward",
+      "description": "Collection of awards and rewards obtained by SPE"
+    }
+  }
+}
