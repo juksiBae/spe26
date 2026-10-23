@@ -1,4 +1,4 @@
-import { Eye, Target, Compass, Sparkles, CheckCircle2, Globe2, Award, Zap, Users, ShieldCheck } from 'lucide-react';
+import { Eye, Target, Sparkles, CheckCircle2, Globe2, Award, Zap, Users, ShieldCheck } from 'lucide-react';
 
 const SPE_PEM_AKAMIGAS_LOGO = "https://res.cloudinary.com/dshbbyr3e/image/upload/v1788004945/spe_lhelnj.png";
 
@@ -62,7 +62,7 @@ export default function VisionMission() {
             Vision & <span className="bg-gradient-to-r from-[#FFEC89] via-[#7FFFD4] to-[#58C9F3] bg-clip-text text-transparent">Mission</span>
           </h2>
           <p className="text-sm sm:text-base md:text-lg text-[#BDE5FF]/85">
-            Arah strategis dan komitmen fundamental untuk mewujudkan SPE PEM Akamigas sebagai episentrum kolaborasi dan aksi nyata industri energi.
+            Strategic direction and fundamental commitments empowering SPE PEM Akamigas as an epicenter of collaboration, technical innovation, and real-world energy impact.
           </p>
         </div>
 
@@ -97,7 +97,7 @@ export default function VisionMission() {
               </div>
               <div>
                 <h3 className="text-xl sm:text-2xl font-black text-white">Mission & Strategic Pillars</h3>
-                <p className="text-xs text-[#BDE5FF]/70">Lima pilar aksi nyata untuk merealisasikan visi 2026/2027</p>
+                <p className="text-xs text-[#BDE5FF]/70">Five pillars of strategic action to realize our 2026/2027 chapter vision</p>
               </div>
             </div>
             <span className="hidden sm:inline-block text-xs font-mono font-bold text-[#7FFFD4] bg-[#1C4E75]/60 border border-[#2FA0C6]/40 px-3 py-1 rounded-full">
@@ -134,7 +134,7 @@ export default function VisionMission() {
 
                   <div className="mt-4 pt-3 border-t border-[#1C4E75]/60 flex items-center gap-2 text-xs font-medium text-[#BDE5FF]/70">
                     <CheckCircle2 className="w-3.5 h-3.5 text-[#7FFFD4]" />
-                    <span>Pilar Aksi Strategis</span>
+                    <span>Strategic Action Pillar</span>
                   </div>
                 </div>
               );

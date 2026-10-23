@@ -189,6 +189,70 @@
         }
       },
       "required": ["title", "year", "description", "image"]
+    },
+    "SpeTrivia": {
+      "title": "SPE Trivia Document",
+      "description": "Educational trivia modules and docx question banks uploaded by admin.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Title of the trivia module"
+        },
+        "category": {
+          "type": "string",
+          "description": "Category or petroleum discipline"
+        },
+        "level": {
+          "type": "string",
+          "description": "Difficulty level"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the module"
+        },
+        "image": {
+          "type": "string",
+          "description": "Cover photo URL"
+        },
+        "docxFileName": {
+          "type": "string",
+          "description": "Name of the docx file"
+        },
+        "docxFileSize": {
+          "type": "string",
+          "description": "Size of the docx file"
+        },
+        "docxFileUrl": {
+          "type": "string",
+          "description": "Download URL or base64 data"
+        },
+        "questionCount": {
+          "type": "number",
+          "description": "Number of questions in the document"
+        },
+        "tags": {
+          "type": "array",
+          "description": "Topic tags"
+        },
+        "keyFacts": {
+          "type": "array",
+          "description": "Key takeaways and facts"
+        },
+        "previewQuestions": {
+          "type": "array",
+          "description": "Sample interactive preview questions"
+        },
+        "createdAt": {
+          "type": "object",
+          "description": "Timestamp"
+        },
+        "isDeleted": {
+          "type": "boolean",
+          "description": "Soft deletion status"
+        }
+      },
+      "required": ["title", "category", "description", "image", "docxFileName"]
     }
   },
   "firestore": {
@@ -211,6 +275,10 @@
     "rewards": {
       "schema": "Reward",
       "description": "Collection of awards and rewards obtained by SPE"
+    },
+    "spetrivia": {
+      "schema": "SpeTrivia",
+      "description": "Collection of SPE Trivia modules and downloadable docx files"
     }
   }
 }

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Award, Calendar, Tag, ChevronRight, X, Trophy } from 'lucide-react';
+import { Award, Tag, ChevronRight, X, Trophy } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { collection, getDocs, query, orderBy, where } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 import { Reward } from '../types';
 import { INITIAL_REWARDS } from '../firebase';
@@ -24,7 +24,6 @@ export default function RewardsSection() {
     const fetchRewards = async () => {
       try {
         const rewardsCol = collection(db, 'rewards');
-        // Fetch all documents and filter/sort client-side to avoid composite index requirements
         const querySnapshot = await getDocs(rewardsCol);
         
         const rewardsList: Reward[] = [];
@@ -50,7 +49,6 @@ export default function RewardsSection() {
         if (activeRewards.length > 0) {
           setRewards(activeRewards);
         } else {
-          // Fallback to initial seeds
           setRewards(INITIAL_REWARDS.map((r, i) => ({
             id: `fallback-${i}`,
             ...r,
@@ -91,13 +89,13 @@ export default function RewardsSection() {
           <div className="space-y-4 max-w-2xl text-center md:text-left">
             <span className="text-[#FFEC89] font-extrabold text-xs uppercase tracking-widest inline-flex items-center gap-2">
               <Trophy className="w-4 h-4 text-[#FFEC89] animate-bounce" />
-              Pencapaian Terbaik Kami
+              Our Premier Achievements
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-              Prestasi & Penghargaan <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#58C9F3] via-[#7FFFD4] to-[#FFEC89]">SPE PEM Akamigas</span>
+              Honors & Accolades <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#58C9F3] via-[#7FFFD4] to-[#FFEC89]">SPE PEM Akamigas</span>
             </h2>
             <p className="text-[#BDE5FF]/85 text-base leading-relaxed">
-              Daftar penghargaan bergengsi dan pengakuan global yang telah diraih oleh Student Chapter kami dalam membina kompetensi, kepemimpinan, dan inovasi berkelanjutan.
+              A proud record of international recognitions and awards earned by our Student Chapter in advancing technical excellence, leadership, and sustainability.
             </p>
           </div>
           
@@ -105,7 +103,7 @@ export default function RewardsSection() {
           <div className="flex items-center justify-center gap-6 self-center md:self-end bg-[#061826]/80 px-6 py-4 rounded-2xl border border-[#1C4E75] backdrop-blur-md shadow-xl">
             <div className="text-center border-r border-[#1C4E75] pr-6">
               <div className="text-2xl font-black text-[#FFEC89]">10+</div>
-              <div className="text-[10px] uppercase font-bold text-[#58C9F3] tracking-wider">Total Reward</div>
+              <div className="text-[10px] uppercase font-bold text-[#58C9F3] tracking-wider">Total Awards</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-black text-[#7FFFD4]">Global</div>
@@ -127,7 +125,7 @@ export default function RewardsSection() {
                     : 'bg-[#061826]/90 border-[#1C4E75]/70 text-[#BDE5FF]/70 hover:border-[#2FA0C6] hover:text-white'
                 }`}
               >
-                {cat === 'all' ? 'Semua Kategori' : cat}
+                {cat === 'all' ? 'All Categories' : cat}
               </button>
             ))}
           </div>
@@ -143,8 +141,8 @@ export default function RewardsSection() {
         ) : filteredRewards.length === 0 ? (
           <div className="text-center py-16 bg-[#061826]/40 rounded-3xl border border-[#1C4E75]">
             <Award className="w-12 h-12 text-[#1C4E75] mx-auto mb-4" />
-            <h3 className="text-lg font-bold text-[#BDE5FF]">Belum Ada Reward Ditemukan</h3>
-            <p className="text-[#BDE5FF]/60 text-sm mt-1">Reward dalam kategori ini akan segera diperbarui.</p>
+            <h3 className="text-lg font-bold text-[#BDE5FF]">No Awards Found</h3>
+            <p className="text-[#BDE5FF]/60 text-sm mt-1">Awards in this category will be updated shortly.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -160,7 +158,6 @@ export default function RewardsSection() {
               >
                 {/* Image Frame */}
                 <div className="relative h-48 sm:h-52 overflow-hidden bg-[#061826] border-b border-[#1C4E75]/60 shrink-0">
-                  {/* Subtle Glow */}
                   <div className="absolute inset-0 bg-gradient-to-t from-[#061826] to-transparent opacity-60 z-10" />
                   <img
                     src={resolveImage(reward.image)}
@@ -182,7 +179,6 @@ export default function RewardsSection() {
                 {/* Content Box */}
                 <div className="flex flex-col flex-1 p-5 sm:p-6 relative justify-between">
                   <div>
-                    {/* Category text */}
                     {reward.category && (
                       <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#58C9F3] uppercase tracking-widest mb-2.5">
                         <Tag className="w-3.5 h-3.5 text-[#7FFFD4]" />
@@ -190,20 +186,17 @@ export default function RewardsSection() {
                       </div>
                     )}
 
-                    {/* Title */}
                     <h3 className="text-base sm:text-lg font-extrabold text-white group-hover:text-[#58C9F3] transition-colors duration-300 leading-snug mb-2.5 line-clamp-2">
                       {reward.title}
                     </h3>
 
-                    {/* Description excerpt */}
                     <p className="text-[#BDE5FF]/80 text-xs leading-relaxed line-clamp-2 sm:line-clamp-3 mb-4">
                       {reward.description}
                     </p>
                   </div>
 
-                  {/* Bottom details action */}
                   <div className="mt-auto pt-3 border-t border-[#1C4E75]/80 flex items-center justify-between text-[11px] font-bold text-[#BDE5FF]/70 group-hover:text-[#7FFFD4] transition-colors duration-300">
-                    <span className="uppercase tracking-wider">Detail Pencapaian</span>
+                    <span className="uppercase tracking-wider">Achievement Details</span>
                     <div className="w-8 h-8 rounded-full bg-[#1C4E75]/60 border border-[#2FA0C6]/40 group-hover:bg-[#2FA0C6] group-hover:border-[#58C9F3] group-hover:text-[#061826] flex items-center justify-center transition-all duration-300 shadow-sm shrink-0">
                       <ChevronRight className="w-4 h-4" />
                     </div>
@@ -219,7 +212,6 @@ export default function RewardsSection() {
       <AnimatePresence>
         {selectedReward && (
           <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
-            {/* Dark blur backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -228,14 +220,12 @@ export default function RewardsSection() {
               className="absolute inset-0 bg-[#061826]/85 backdrop-blur-md"
             />
 
-            {/* Modal Body */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               className="relative w-full max-w-3xl bg-[#061826] border border-[#2FA0C6]/40 rounded-3xl overflow-hidden shadow-2xl shadow-[#2FA0C6]/20 max-h-[90vh] flex flex-col md:flex-row z-10"
             >
-              {/* Image Frame (Left on Desktop, Top on Mobile) */}
               <div className="relative md:w-1/2 h-64 md:h-auto bg-[#061826] flex-shrink-0">
                 <img
                   src={resolveImage(selectedReward.image)}
@@ -244,17 +234,14 @@ export default function RewardsSection() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-[#061826]/80 to-transparent" />
                 
-                {/* Hover style internal caption */}
                 <div className="absolute bottom-4 left-4 right-4 p-3 rounded-xl bg-[#061826]/90 backdrop-blur-sm border border-[#1C4E75] text-center">
                   <span className="text-[9px] font-bold uppercase tracking-widest text-[#58C9F3]">{selectedReward.category || 'Achievement'}</span>
                   <div className="text-white text-xs font-bold mt-0.5">{selectedReward.year} SC Award</div>
                 </div>
               </div>
 
-              {/* Text Frame (Right on Desktop, Bottom on Mobile) */}
               <div className="p-6 md:p-8 md:w-1/2 flex flex-col justify-between overflow-y-auto">
                 <div>
-                  {/* Close button */}
                   <button
                     onClick={() => setSelectedReward(null)}
                     className="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-950 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white cursor-pointer transition-colors"

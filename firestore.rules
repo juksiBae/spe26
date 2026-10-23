@@ -25,5 +25,10 @@ service cloud.firestore {
     match /rewards/{rewardId} {
       allow read, write: if true;
     }
+
+    // SPE Trivia Collection Rules
+    match /spetrivia/{triviaId} {
+      allow read, write: if true;
+    }
   }
 }

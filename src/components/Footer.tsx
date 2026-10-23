@@ -1,12 +1,26 @@
-import { Mail, Phone, MapPin, Instagram, Youtube, Linkedin, Globe2, Shield } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Mail, Phone, MapPin, Instagram, Youtube, Linkedin, Globe2, Shield, Flame, FileText } from 'lucide-react';
 
 const SPE_PEM_AKAMIGAS_LOGO = "https://res.cloudinary.com/dshbbyr3e/image/upload/v1788004945/spe_lhelnj.png";
 
 interface FooterProps {
   onAdminToggle?: () => void;
+  onOpenPortalForm?: () => void;
+  onOpenYouthchamp?: () => void;
 }
 
-export default function Footer({ onAdminToggle }: FooterProps) {
+export default function Footer({ onAdminToggle, onOpenPortalForm, onOpenYouthchamp }: FooterProps) {
+  const [isAdminParamPresent, setIsAdminParamPresent] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      const hasAdminParam = searchParams.get('admin') === '1' || searchParams.get('admin') === 'true';
+      const isPathAdmin = window.location.pathname.toLowerCase().startsWith('/admin') || window.location.hash.toLowerCase() === '#admin';
+      setIsAdminParamPresent(hasAdminParam || isPathAdmin);
+    }
+  }, []);
+
   const socialLinks = [
     { icon: Instagram, url: "https://www.instagram.com/spepemakamigassc", color: "hover:bg-pink-600 hover:text-white" },
     { icon: Phone, url: "https://wa.me/6287820062020", color: "hover:bg-emerald-600 hover:text-white" },
@@ -19,7 +33,8 @@ export default function Footer({ onAdminToggle }: FooterProps) {
     { label: "About SPE", href: "about" },
     { label: "SPE International", href: "global" },
     { label: "Vision & Mission", href: "vision" },
-    { label: "News & Events", href: "news" }
+    { label: "News & Events", href: "news" },
+    { label: "SpeTrivia (.docx)", href: "trivia" }
   ];
 
   const scrollToSection = (id: string) => {
@@ -58,6 +73,30 @@ export default function Footer({ onAdminToggle }: FooterProps) {
             <p className="text-[#BDE5FF]/70 text-sm leading-relaxed">
               SPE PEM Akamigas is the official student chapter of the Society of Petroleum Engineers, dedicated to engineering excellence, professional training, and proactive coastal conservation programs.
             </p>
+
+            {/* Special Portal & Youthchamp Badges */}
+            <div className="flex flex-wrap items-center gap-2.5 pt-1">
+              {onOpenYouthchamp && (
+                <button
+                  type="button"
+                  onClick={onOpenYouthchamp}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#f25142] to-[#ff8f00] text-white text-xs font-black uppercase tracking-wider shadow-md hover:scale-105 transition-all cursor-pointer"
+                >
+                  <Flame className="w-3.5 h-3.5 text-[#ffec89]" />
+                  Youthchamp 2027
+                </button>
+              )}
+              {onOpenPortalForm && (
+                <button
+                  type="button"
+                  onClick={onOpenPortalForm}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#1C4E75] text-[#7FFFD4] text-xs font-black uppercase tracking-wider border border-[#2FA0C6]/50 shadow-md hover:scale-105 transition-all cursor-pointer"
+                >
+                  <FileText className="w-3.5 h-3.5 text-[#FFEC89]" />
+                  Portal Event & Proposal
+                </button>
+              )}
+            </div>
             
             {/* Social media */}
             <div className="flex items-center gap-3 mt-2">
@@ -94,11 +133,37 @@ export default function Footer({ onAdminToggle }: FooterProps) {
                   </button>
                 </li>
               ))}
-              {onAdminToggle && (
+
+              {onOpenYouthchamp && (
                 <li>
                   <button
+                    onClick={onOpenYouthchamp}
+                    className="text-[#ffab00] hover:text-white transition-all text-sm font-bold cursor-pointer text-left flex items-center gap-1.5"
+                  >
+                    <Flame className="w-3.5 h-3.5 text-[#f25142]" />
+                    Youthchamp 2027 Competition
+                  </button>
+                </li>
+              )}
+
+              {onOpenPortalForm && (
+                <li>
+                  <button
+                    onClick={onOpenPortalForm}
+                    className="text-[#7FFFD4] hover:text-white transition-all text-sm font-bold cursor-pointer text-left flex items-center gap-1.5"
+                  >
+                    <FileText className="w-3.5 h-3.5 text-[#58C9F3]" />
+                    Portal Event & Proposal
+                  </button>
+                </li>
+              )}
+
+              {/* ADMIN LINK ONLY SHOWN IF ?admin=1 */}
+              {isAdminParamPresent && onAdminToggle && (
+                <li className="pt-2 border-t border-[#1C4E75]/60">
+                  <button
                     onClick={onAdminToggle}
-                    className="text-[#FFEC89] hover:text-white transition-all text-sm font-bold cursor-pointer text-left flex items-center gap-1.5 pt-1"
+                    className="text-[#FFEC89] hover:text-white transition-all text-sm font-bold cursor-pointer text-left flex items-center gap-1.5"
                   >
                     <Shield className="w-3.5 h-3.5" />
                     Admin Panel (CMS)
@@ -145,3 +210,4 @@ export default function Footer({ onAdminToggle }: FooterProps) {
     </footer>
   );
 }
+

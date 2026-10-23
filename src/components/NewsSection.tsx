@@ -1,12 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Calendar, ArrowRight, ChevronLeft, ChevronRight, X, Clock, RefreshCw } from 'lucide-react';
 import { NewsArticle } from '../types';
-import { db } from '../firebase';
+import { db, INITIAL_NEWS } from '../firebase';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 
 export default function NewsSection() {
-  const [news, setNews] = useState<NewsArticle[]>([]);
-  const [loading, setLoading] = useState(true);
+  const getInitialActiveNews = () => {
+    try {
+      const deletedIds: string[] = JSON.parse(localStorage.getItem('spe_deleted_news_ids') || '[]');
+      return INITIAL_NEWS
+        .map((n, i) => ({ id: `init-news-${i}`, ...n }))
+        .filter(n => !deletedIds.includes(n.id) && !deletedIds.includes(n.title));
+    } catch {
+      return INITIAL_NEWS.map((n, i) => ({ id: `init-news-${i}`, ...n }));
+    }
+  };
+
+  const [news, setNews] = useState<NewsArticle[]>(getInitialActiveNews);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeArticle, setActiveArticle] = useState<NewsArticle | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -16,11 +27,12 @@ export default function NewsSection() {
   const scrollLeftStart = useRef(0);
   const dragDistance = useRef(0);
 
-  // Fetch news from Firestore directly
+  // Fetch news from Firestore directly with deleted filter
   const fetchNews = async () => {
     try {
       setLoading(true);
       setError(null);
+      const deletedIds: string[] = JSON.parse(localStorage.getItem('spe_deleted_news_ids') || '[]');
       const newsCol = collection(db, 'news');
       const q = query(newsCol, orderBy('createdAt', 'desc'));
       const querySnapshot = await getDocs(q);
@@ -28,20 +40,33 @@ export default function NewsSection() {
       const articles: NewsArticle[] = [];
       querySnapshot.forEach((docSnap) => {
         const data = docSnap.data();
-        articles.push({
-          id: docSnap.id,
-          title: data.title,
-          date: data.date,
-          excerpt: data.excerpt,
-          fullText: data.fullText,
-          image: data.image,
-          createdAt: data.createdAt ? (typeof data.createdAt.toDate === 'function' ? data.createdAt.toDate().toISOString() : data.createdAt) : new Date().toISOString()
-        } as NewsArticle);
+        if (!deletedIds.includes(docSnap.id) && data.isDeleted !== true) {
+          articles.push({
+            id: docSnap.id,
+            title: data.title,
+            date: data.date,
+            excerpt: data.excerpt,
+            fullText: data.fullText,
+            image: data.image,
+            createdAt: data.createdAt ? (typeof data.createdAt.toDate === 'function' ? data.createdAt.toDate().toISOString() : data.createdAt) : new Date().toISOString()
+          } as NewsArticle);
+        }
       });
-      setNews(articles);
+      if (articles.length > 0) {
+        setNews(articles);
+      } else {
+        const activeInitial = INITIAL_NEWS
+          .map((n, i) => ({ id: `init-news-${i}`, ...n }))
+          .filter(n => !deletedIds.includes(n.id) && !deletedIds.includes(n.title));
+        setNews(activeInitial);
+      }
     } catch (err: any) {
-      console.error(err);
-      setError(err.message || "Gagal mengambil data berita!");
+      console.warn("Could not fetch news from Firestore, using initial active items:", err);
+      const deletedIds: string[] = JSON.parse(localStorage.getItem('spe_deleted_news_ids') || '[]');
+      const activeInitial = INITIAL_NEWS
+        .map((n, i) => ({ id: `init-news-${i}`, ...n }))
+        .filter(n => !deletedIds.includes(n.id) && !deletedIds.includes(n.title));
+      setNews(activeInitial);
     } finally {
       setLoading(false);
     }
@@ -81,17 +106,20 @@ export default function NewsSection() {
 
   // Seamless snap loop function
   const handleScrollEvent = () => {
-    if (!scrollRef.current || news.length === 0) return;
+    if (!scrollRef.current || news.length < 4) return;
     const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+    
+    // Safety guard: only execute snap if container overflows well beyond screen
+    if (scrollWidth <= clientWidth * 2.2) return;
     const halfWidth = scrollWidth / 2;
 
     // Right boundary snap:
-    if (scrollLeft >= scrollWidth - clientWidth - 10) {
+    if (scrollLeft >= scrollWidth - clientWidth - 5) {
       scrollRef.current.scrollLeft = scrollLeft - halfWidth;
     }
     // Left boundary snap:
-    else if (scrollLeft <= 10) {
-      scrollRef.current.scrollLeft = scrollLeft + halfWidth;
+    else if (scrollLeft <= 0) {
+      scrollRef.current.scrollLeft = halfWidth;
     }
   };
 
@@ -125,7 +153,6 @@ export default function NewsSection() {
 
   const handleCardClick = (item: NewsArticle) => {
     if (dragDistance.current > 10) {
-      // It was a drag, don't open modal
       return;
     }
     setActiveArticle(item);
@@ -133,7 +160,7 @@ export default function NewsSection() {
 
   const handleScroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
-      const cardWidth = 360; // Approximate card width
+      const cardWidth = 360;
       const gap = 24;
       const scrollAmount = direction === 'left' ? -(cardWidth + gap) : (cardWidth + gap);
       scrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
@@ -145,7 +172,7 @@ export default function NewsSection() {
       id="news" 
       className="py-24 bg-[#061826]/90 relative overflow-hidden border-b border-[#1C4E75]/70"
     >
-      {/* Premium subtle dotted mesh */}
+      {/* Subtle dotted mesh */}
       <div className="absolute inset-0 bg-[radial-gradient(#2FA0C6_1px,transparent_1px)] [background-size:32px_32px] opacity-15 pointer-events-none" />
 
       {/* Soft atmospheric gradient */}
@@ -180,12 +207,14 @@ export default function NewsSection() {
             <button
               onClick={() => handleScroll('left')}
               className="p-3.5 rounded-full border transition-all duration-300 shadow-lg cursor-pointer bg-[#061826]/90 border-[#1C4E75] text-[#58C9F3] hover:bg-[#1C4E75]/60 hover:border-[#2FA0C6]"
+              aria-label="Scroll left"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button
               onClick={() => handleScroll('right')}
               className="p-3.5 rounded-full border transition-all duration-300 shadow-lg cursor-pointer bg-[#061826]/90 border-[#1C4E75] text-[#58C9F3] hover:bg-[#1C4E75]/60 hover:border-[#2FA0C6]"
+              aria-label="Scroll right"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
@@ -196,18 +225,18 @@ export default function NewsSection() {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 gap-4">
             <div className="w-12 h-12 border-4 border-[#2FA0C6] border-t-transparent rounded-full animate-spin" />
-            <span className="font-bold text-sm text-[#BDE5FF]/70">Loading berita terbaru...</span>
+            <span className="font-bold text-sm text-[#BDE5FF]/70">Loading latest articles...</span>
           </div>
         ) : error ? (
           <div className="p-8 rounded-3xl border text-center max-w-md mx-auto bg-red-950/40 border-red-500/40">
             <p className="text-red-400 font-semibold mb-3">{error}</p>
             <button onClick={fetchNews} className="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm transition-all">
-              Coba Lagi
+              Try Again
             </button>
           </div>
         ) : news.length === 0 ? (
           <div className="p-12 text-center rounded-3xl border shadow-inner bg-[#061826]/70 border-[#1C4E75]">
-            <p className="text-[#BDE5FF]/60 font-medium">Belum ada berita yang diterbitkan saat ini.</p>
+            <p className="text-[#BDE5FF]/60 font-medium">No news articles published yet.</p>
           </div>
         ) : (
           /* Horizontal Swipe List */

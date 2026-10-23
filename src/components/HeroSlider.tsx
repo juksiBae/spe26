@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { ChevronLeft, ChevronRight, ArrowRight, Award, Sparkles, Flame } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowRight, Award, Sparkles, Flame, FileText } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { db, INITIAL_SLIDES } from '../firebase';
@@ -9,6 +9,11 @@ import speLabBg from '../assets/images/spe_lab_bg_1782489725520.jpg';
 import speRewardTrophy from '../assets/images/spe_reward_trophy_1782742761615.jpg';
 
 const SPE_PEM_AKAMIGAS_LOGO = "https://res.cloudinary.com/dshbbyr3e/image/upload/v1788004945/spe_lhelnj.png";
+
+interface HeroSliderProps {
+  onOpenYouthchamp?: () => void;
+  onOpenPortalForm?: () => void;
+}
 
 // Helper to resolve local assets or remote URLs
 function resolveImage(img: string | undefined, title?: string): string {
@@ -22,7 +27,7 @@ function resolveImage(img: string | undefined, title?: string): string {
   return img;
 }
 
-export default function HeroSlider() {
+export default function HeroSlider({ onOpenYouthchamp, onOpenPortalForm }: HeroSliderProps) {
   const [slides, setSlides] = useState<HeroSlide[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -64,7 +69,7 @@ export default function HeroSlider() {
         }
       );
       return () => unsubscribe();
-    } catch (e) {
+    } catch {
       setSlides(
         INITIAL_SLIDES.map((s, idx) => ({
           id: `init-${idx}`,
@@ -84,12 +89,12 @@ export default function HeroSlider() {
     setCurrentIndex((prev) => (prev - 1 + activeSlides.length) % activeSlides.length);
   }, [activeSlides.length]);
 
-  // Autoplay slider automatically every 5 seconds without timer progress animation
+  // Autoplay slider automatically every 5 seconds
   useEffect(() => {
     if (activeSlides.length <= 1) return;
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % activeSlides.length);
-    }, 5000); // changes every 5 seconds
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [activeSlides.length]);
@@ -124,7 +129,6 @@ export default function HeroSlider() {
             transition={{ duration: 0.85, ease: 'easeInOut' }}
             className="absolute inset-0"
           >
-            {/* Real Image tag for reliable loading and high-definition clarity */}
             <img
               src={resolveImage(currentSlide?.image, currentSlide?.title)}
               alt={currentSlide?.title || "SPE Hero Background"}
@@ -137,12 +141,10 @@ export default function HeroSlider() {
               }}
             />
             
-            {/* Subtle Gradient Overlays to keep text high contrast and readable while showing photo clearly */}
             <div className="absolute inset-0 bg-[#061826]/40" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#061826] via-transparent to-[#061826]/60" />
             <div className="absolute inset-0 bg-gradient-to-r from-[#061826]/75 via-transparent to-[#061826]/75" />
             
-            {/* Subtle Ambient Lighting Accents */}
             <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-gradient-to-b from-[#FFEC89]/15 via-[#2FA0C6]/12 to-transparent rounded-full blur-[130px]" />
             <div className="absolute bottom-16 right-1/4 w-[450px] h-[450px] bg-[#58C9F3]/12 rounded-full blur-[140px]" />
           </motion.div>
@@ -180,7 +182,7 @@ export default function HeroSlider() {
             transition={{ duration: 0.5, ease: 'easeOut' }}
             className="flex flex-col items-center space-y-6"
           >
-            {/* Top Subtitle Badge with Butter & Aqua Gradient Glow */}
+            {/* Top Subtitle Badge */}
             <div className="inline-flex items-center gap-3 px-4 sm:px-5 py-2 rounded-full bg-[#061826]/85 border border-[#FFEC89]/40 text-[#FFEC89] text-xs sm:text-sm font-extrabold uppercase tracking-widest backdrop-blur-md shadow-2xl shadow-[#061826]/80 ring-1 ring-[#FFEC89]/20">
               <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-gradient-to-br from-[#1C4E75] via-[#2FA0C6] to-[#061826] p-1 flex items-center justify-center border border-[#58C9F3]/60 shadow-inner">
                 <img src={SPE_PEM_AKAMIGAS_LOGO} alt="SPE PEM Akamigas" className="w-full h-full object-contain" />
@@ -235,31 +237,55 @@ export default function HeroSlider() {
               {currentSlide?.description}
             </p>
 
-            {/* Call-to-Action Buttons with Butter Gold Gradient Elements */}
-            <div className="flex flex-wrap items-center justify-center gap-4 pt-3">
+            {/* Call-to-Action Buttons */}
+            <div className="flex flex-wrap items-center justify-center gap-3.5 pt-3">
+              {/* Special Youthchamp Button */}
+              {onOpenYouthchamp && (
+                <button
+                  onClick={onOpenYouthchamp}
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-gradient-to-r from-[#f25142] to-[#ff8f00] text-white hover:brightness-110 font-black text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 shadow-xl shadow-[#f25142]/40 hover:scale-105 active:scale-95 cursor-pointer ring-2 ring-[#ffab00]/50"
+                  title="Open Official Youthchamp 2027 Portal"
+                >
+                  <Flame className="w-4 h-4 text-[#ffec89] animate-pulse" />
+                  <span>Youthchamp 2027</span>
+                </button>
+              )}
+
+              {/* Special Portal Form Button */}
+              {onOpenPortalForm && (
+                <button
+                  onClick={onOpenPortalForm}
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-[#1C4E75]/90 hover:bg-[#2FA0C6] border border-[#2FA0C6]/60 text-[#7FFFD4] hover:text-[#061826] font-black text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md shadow-xl"
+                  title="Open Official Event & Proposal Form Portal"
+                >
+                  <FileText className="w-4 h-4 text-[#FFEC89]" />
+                  <span>Portal Form & Proposal</span>
+                </button>
+              )}
+
               {currentSlide?.cta1 && (
                 <button
                   onClick={() => scrollToSection(currentSlide.cta1Link || 'akamigas')}
-                  className="inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-full bg-gradient-to-r from-[#FFEC89] via-[#7FFFD4] to-[#58C9F3] text-[#061826] hover:brightness-110 font-black text-sm sm:text-base tracking-wide transition-all duration-300 shadow-2xl shadow-[#FFEC89]/25 hover:scale-105 active:scale-95 cursor-pointer ring-2 ring-[#FFEC89]/50"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-gradient-to-r from-[#FFEC89] via-[#7FFFD4] to-[#58C9F3] text-[#061826] hover:brightness-110 font-black text-xs sm:text-sm tracking-wide transition-all duration-300 shadow-xl shadow-[#FFEC89]/25 hover:scale-105 active:scale-95 cursor-pointer ring-1 ring-[#FFEC89]/50"
                 >
-                  <Sparkles className="w-4 h-4 text-[#061826]" />
+                  <Sparkles className="w-3.5 h-3.5 text-[#061826]" />
                   {currentSlide.cta1}
-                  <ArrowRight className="w-4 h-4 text-[#061826]" />
+                  <ArrowRight className="w-3.5 h-3.5 text-[#061826]" />
                 </button>
               )}
 
               {currentSlide?.cta2 ? (
                 <button
                   onClick={() => scrollToSection(currentSlide.cta2Link || 'nexus')}
-                  className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full bg-[#1C4E75]/80 hover:bg-[#1C4E75] border border-[#2FA0C6]/50 hover:border-[#FFEC89]/60 text-[#BDE5FF] hover:text-[#FFEC89] font-bold text-sm sm:text-base transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md shadow-xl"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-[#061826]/80 hover:bg-[#1C4E75] border border-[#2FA0C6]/50 hover:border-[#FFEC89]/60 text-[#BDE5FF] hover:text-[#FFEC89] font-bold text-xs sm:text-sm transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md shadow-lg"
                 >
-                  {currentSlide.cta2 === "#NexusInAction" && <Flame className="w-4 h-4 text-[#FFEC89]" />}
+                  {currentSlide.cta2 === "#NexusInAction" && <Flame className="w-3.5 h-3.5 text-[#FFEC89]" />}
                   {currentSlide.cta2}
                 </button>
               ) : (
                 <button
                   onClick={() => scrollToSection('contact')}
-                  className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full bg-[#1C4E75]/80 hover:bg-[#1C4E75] border border-[#2FA0C6]/50 hover:border-[#FFEC89]/60 text-[#BDE5FF] hover:text-[#FFEC89] font-bold text-sm sm:text-base transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md shadow-xl"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-[#061826]/80 hover:bg-[#1C4E75] border border-[#2FA0C6]/50 hover:border-[#FFEC89]/60 text-[#BDE5FF] hover:text-[#FFEC89] font-bold text-xs sm:text-sm transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md shadow-lg"
                 >
                   Join Member
                 </button>
@@ -267,7 +293,7 @@ export default function HeroSlider() {
 
               <button
                 onClick={() => scrollToSection('news')}
-                className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full bg-[#061826]/80 hover:bg-[#1C4E75]/60 border border-[#7FFFD4]/50 hover:border-[#7FFFD4] text-[#7FFFD4] hover:text-white font-bold text-sm sm:text-base transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md shadow-xl"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-[#061826]/80 hover:bg-[#1C4E75]/60 border border-[#7FFFD4]/50 hover:border-[#7FFFD4] text-[#7FFFD4] hover:text-white font-bold text-xs sm:text-sm transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md shadow-lg"
               >
                 Latest News
               </button>
@@ -276,7 +302,7 @@ export default function HeroSlider() {
         </AnimatePresence>
       </div>
 
-      {/* Minimal Discreet Slide Indicator Dots & Quick Arrows */}
+      {/* Slide Indicator Dots & Quick Arrows */}
       <div className="relative z-20 w-full flex items-center justify-center gap-3 pb-6 pt-4">
         <button
           onClick={handlePrev}
@@ -315,4 +341,3 @@ export default function HeroSlider() {
     </section>
   );
 }
-

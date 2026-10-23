@@ -67,7 +67,7 @@ export default function CoreValues() {
             #Nexus<span className="bg-gradient-to-r from-[#FFEC89] via-[#7FFFD4] to-[#58C9F3] bg-clip-text text-transparent">InAction</span>
           </h2>
           <p className="text-sm sm:text-base md:text-lg text-[#BDE5FF]/85 px-2">
-            Membina generasi pemimpin dan inovator energi masa depan melalui nilai-nilai fundamental NEXUS.
+            Nurturing future energy pioneers and leaders through our foundational NEXUS organizational values.
           </p>
         </div>
 
@@ -83,7 +83,7 @@ export default function CoreValues() {
 
             <h3 className="text-xl sm:text-2xl font-black mb-2 text-white">#NexusInAction</h3>
             <p className="text-xs sm:text-sm leading-relaxed mb-6 text-[#BDE5FF]/80">
-              Gerakan aksi nyata SPE PEM Akamigas yang mencerminkan dedikasi, ketangguhan, dan kolaborasi mahasiswa dalam menorehkan prestasi serta kontribusi nyata bagi industri energi.
+              The signature action movement of SPE PEM Akamigas reflecting dedication, resilience, and student collaboration to drive tangible contributions to the global energy industry.
             </p>
 
             <button 
@@ -126,4 +126,3 @@ export default function CoreValues() {
     </section>
   );
 }
-

@@ -9,8 +9,11 @@ import ChapterSection from './components/ChapterSection';
 import VisionMission from './components/VisionMission';
 import CoreValues from './components/CoreValues';
 import NewsSection from './components/NewsSection';
+import SPETrivia from './components/SPETrivia';
 import JoinForm from './components/JoinForm';
 import AdminPanel from './components/AdminPanel';
+import PortalForm from './components/PortalForm';
+import Youthchamp2027 from './components/Youthchamp2027';
 import Footer from './components/Footer';
 import speHeroBg from './assets/images/spe_hero_bg_1782489705345.jpg';
 
@@ -19,9 +22,23 @@ export default function App() {
     if (typeof window === 'undefined') return false;
     const path = window.location.pathname.toLowerCase();
     const hash = window.location.hash.toLowerCase();
-    return path === '/admin' || path.startsWith('/admin/') || hash === '#admin';
+    const searchParams = new URLSearchParams(window.location.search);
+    const hasAdminParam = searchParams.get('admin') === '1' || searchParams.get('admin') === 'true';
+    return (path === '/admin' || path.startsWith('/admin/') || hash === '#admin') && hasAdminParam;
   };
 
+  const getInitialView = (): 'home' | 'portal-form' | 'youthchamp' => {
+    if (typeof window === 'undefined') return 'home';
+    const hash = window.location.hash.toLowerCase();
+    const searchParams = new URLSearchParams(window.location.search);
+    const viewParam = searchParams.get('view')?.toLowerCase();
+
+    if (hash === '#youthchamp' || viewParam === 'youthchamp') return 'youthchamp';
+    if (hash === '#form' || hash === '#portal' || hash === '#portal-form' || viewParam === 'form' || viewParam === 'portal') return 'portal-form';
+    return 'home';
+  };
+
+  const [currentView, setCurrentView] = useState<'home' | 'portal-form' | 'youthchamp'>(getInitialView);
   const [isAdminOpen, setIsAdminOpen] = useState<boolean>(isCurrentlyAdminPath);
   const [bgImage, setBgImage] = useState<string>(() => {
     return localStorage.getItem('spe_custom_bg') || speHeroBg;
@@ -29,7 +46,25 @@ export default function App() {
 
   useEffect(() => {
     const handleUrlChange = () => {
-      setIsAdminOpen(isCurrentlyAdminPath());
+      const searchParams = new URLSearchParams(window.location.search);
+      const hasAdminParam = searchParams.get('admin') === '1' || searchParams.get('admin') === 'true';
+      const path = window.location.pathname.toLowerCase();
+      const hash = window.location.hash.toLowerCase();
+      const viewParam = searchParams.get('view')?.toLowerCase();
+
+      if (hasAdminParam && (path === '/admin' || hash === '#admin')) {
+        setIsAdminOpen(true);
+      } else if (!hasAdminParam && (path === '/admin' || hash === '#admin')) {
+        setIsAdminOpen(false);
+      }
+
+      if (hash === '#youthchamp' || viewParam === 'youthchamp') {
+        setCurrentView('youthchamp');
+      } else if (hash === '#form' || hash === '#portal' || hash === '#portal-form' || viewParam === 'form' || viewParam === 'portal') {
+        setCurrentView('portal-form');
+      } else if (!isAdminOpen) {
+        setCurrentView('home');
+      }
     };
 
     window.addEventListener('popstate', handleUrlChange);
@@ -38,16 +73,14 @@ export default function App() {
       window.removeEventListener('popstate', handleUrlChange);
       window.removeEventListener('hashchange', handleUrlChange);
     };
-  }, []);
+  }, [isAdminOpen]);
 
   const handleExitAdmin = () => {
     setIsAdminOpen(false);
-    if (window.location.pathname.toLowerCase().startsWith('/admin')) {
-      window.history.pushState({}, '', '/');
-    }
-    if (window.location.hash.toLowerCase() === '#admin') {
-      window.history.pushState({}, '', window.location.pathname);
-    }
+    const searchParams = new URLSearchParams(window.location.search);
+    const adminParam = searchParams.get('admin');
+    const newQuery = adminParam ? `?admin=${adminParam}` : '';
+    window.history.pushState({}, '', `/${newQuery}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -56,9 +89,37 @@ export default function App() {
       handleExitAdmin();
     } else {
       setIsAdminOpen(true);
-      window.history.pushState({}, '', '/admin');
+      const searchParams = new URLSearchParams(window.location.search);
+      if (!searchParams.get('admin')) {
+        searchParams.set('admin', '1');
+      }
+      window.history.pushState({}, '', `/admin?${searchParams.toString()}`);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+  };
+
+  const handleOpenYouthchamp = () => {
+    setIsAdminOpen(false);
+    setCurrentView('youthchamp');
+    window.history.pushState({}, '', '#youthchamp');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleOpenPortalForm = () => {
+    setIsAdminOpen(false);
+    setCurrentView('portal-form');
+    window.history.pushState({}, '', '#portal-form');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleBackToHome = () => {
+    setCurrentView('home');
+    setIsAdminOpen(false);
+    const searchParams = new URLSearchParams(window.location.search);
+    const adminParam = searchParams.get('admin');
+    const newQuery = adminParam ? `?admin=${adminParam}` : '';
+    window.history.pushState({}, '', `/${newQuery}`);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSaveCustomBg = (url: string) => {
@@ -72,6 +133,17 @@ export default function App() {
     localStorage.removeItem('spe_custom_bg');
   };
 
+  // IF YOUTHCHAMP VIEW IS ACTIVE
+  if (currentView === 'youthchamp') {
+    return <Youthchamp2027 onBackToSPEPortal={handleBackToHome} />;
+  }
+
+  // IF PORTAL FORM VIEW IS ACTIVE
+  if (currentView === 'portal-form') {
+    return <PortalForm onBackToHome={handleBackToHome} />;
+  }
+
+  // DEFAULT / MAIN PORTAL VIEW
   return (
     <div className="min-h-screen relative font-sans antialiased text-slate-100 overflow-x-hidden selection:bg-blue-600 selection:text-white">
       {/* 
@@ -89,7 +161,13 @@ export default function App() {
       <div className="fixed bottom-0 right-1/4 w-[600px] h-[600px] bg-[#58C9F3]/10 rounded-full blur-[150px] pointer-events-none -z-10" />
       <div className="fixed top-1/2 right-10 w-[400px] h-[400px] bg-[#7FFFD4]/8 rounded-full blur-[140px] pointer-events-none -z-10" />
 
-      <Navbar onAdminToggle={handleAdminToggle} isAdminOpen={isAdminOpen} />
+      <Navbar 
+        onAdminToggle={handleAdminToggle} 
+        isAdminOpen={isAdminOpen} 
+        onOpenYouthchamp={handleOpenYouthchamp}
+        onOpenPortalForm={handleOpenPortalForm}
+        currentView={currentView}
+      />
       
       {isAdminOpen ? (
         <div className="pt-20 relative z-10">
@@ -102,7 +180,10 @@ export default function App() {
         </div>
       ) : (
         <main className="relative z-10 w-full">
-          <HeroSlider />
+          <HeroSlider 
+            onOpenYouthchamp={handleOpenYouthchamp}
+            onOpenPortalForm={handleOpenPortalForm}
+          />
           <SponsorDivider />
           <RewardsSection />
           <AboutSection />
@@ -111,12 +192,18 @@ export default function App() {
           <VisionMission />
           <CoreValues />
           <NewsSection />
+          <SPETrivia />
           <JoinForm />
         </main>
       )}
 
-      <Footer onAdminToggle={handleAdminToggle} />
+      <Footer 
+        onAdminToggle={handleAdminToggle} 
+        onOpenYouthchamp={handleOpenYouthchamp}
+        onOpenPortalForm={handleOpenPortalForm}
+      />
     </div>
   );
 }
+
 

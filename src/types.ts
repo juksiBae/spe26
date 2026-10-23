@@ -58,4 +58,31 @@ export interface Reward {
   isDeleted?: boolean;
 }
 
+export interface SpeTriviaItem {
+  id: string;
+  title: string;
+  category: string;
+  level?: 'Beginner' | 'Intermediate' | 'Advanced' | 'General' | 'Dasar' | 'Menengah' | 'Lanjutan';
+  description: string;
+  image: string;
+  fileType?: 'docx' | 'pdf' | 'doc';
+  docxFileName: string;
+  docxFileSize?: string;
+  docxFileUrl?: string; // Data URL or external link
+  docxData?: string; // Base64 or raw text/content
+  questionCount?: number;
+  tags?: string[];
+  keyFacts?: string[];
+  previewQuestions?: {
+    q: string;
+    options: string[];
+    answerIdx: number;
+    explanation: string;
+  }[];
+  createdAt?: string;
+  downloadsCount?: number;
+  isDeleted?: boolean;
+}
+
+
 

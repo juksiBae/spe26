@@ -1,11 +1,10 @@
-import React from 'react';
-import { CheckCircle2, MessageCircle, ArrowRight, Sparkles, Users, Award, ExternalLink } from 'lucide-react';
+import { CheckCircle2, MessageCircle, ArrowRight, Sparkles, Users, Award } from 'lucide-react';
 
 const SPE_PEM_AKAMIGAS_LOGO = "https://res.cloudinary.com/dshbbyr3e/image/upload/v1788004945/spe_lhelnj.png";
 
 export default function JoinForm() {
   const handleWhatsAppRedirect = () => {
-    const text = `Halo Admin SPE PEM Akamigas! Saya tertarik untuk bergabung menjadi member SPE PEM Akamigas Student Chapter. Mohon informasi langkah pendaftaran selanjutnya. Terima kasih!`;
+    const text = `Hello SPE PEM Akamigas Admin! I am interested in joining as a member of the SPE PEM Akamigas Student Chapter. Please provide information on the next registration steps. Thank you!`;
     const encodedText = encodeURIComponent(text);
     window.open(`https://wa.me/6287820062020?text=${encodedText}`, '_blank');
   };
@@ -14,21 +13,21 @@ export default function JoinForm() {
     {
       icon: Users,
       title: "Global Professional Network",
-      desc: "Terhubung langsung dengan lebih dari 140.000 profesional, peneliti, dan praktisi industri energi dunia.",
+      desc: "Connect directly with over 140,000 engineers, researchers, and energy industry leaders worldwide.",
       color: "text-blue-500",
       bgColor: "bg-blue-50"
     },
     {
       icon: Award,
-      title: "Kompetisi & Pengembangan Karir",
-      desc: "Akses eksklusif ke kompetisi internasional, paper contest, workshop teknis, serta program bimbingan karir.",
+      title: "Competitions & Career Growth",
+      desc: "Exclusive access to international paper contests, technical workshops, software training, and mentorship.",
       color: "text-emerald-500",
       bgColor: "bg-emerald-50"
     },
     {
       icon: Sparkles,
-      title: "Akses OnePetro & Publikasi",
-      desc: "Dapatkan akses gratis ke ribuan jurnal ilmiah, studi kasus, dan publikasi teknik perminyakan terbaik dunia.",
+      title: "OnePetro Access & Publications",
+      desc: "Gain complimentary access to thousands of peer-reviewed technical journals, case studies, and engineering papers.",
       color: "text-indigo-500",
       bgColor: "bg-indigo-50"
     }
@@ -51,10 +50,10 @@ export default function JoinForm() {
             Join Student Chapter
           </span>
           <h2 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight leading-tight mb-4">
-            Pendaftaran <span className="bg-gradient-to-r from-[#FFEC89] via-[#7FFFD4] to-[#58C9F3] bg-clip-text text-transparent">Member Baru</span>
+            Become a <span className="bg-gradient-to-r from-[#FFEC89] via-[#7FFFD4] to-[#58C9F3] bg-clip-text text-transparent">New Member</span>
           </h2>
           <p className="text-[#BDE5FF]/80 text-sm md:text-base">
-            Bergabunglah dengan Society of Petroleum Engineers PEM Akamigas untuk membuka gerbang karir global di industri energi. Proses pendaftaran kini jauh lebih mudah dan cepat langsung melalui WhatsApp.
+            Join the Society of Petroleum Engineers PEM Akamigas to unlock your global career in the energy industry. Fast and seamless onboarding directly via WhatsApp.
           </p>
         </div>
 
@@ -63,7 +62,7 @@ export default function JoinForm() {
           {/* Left Column: Benefits list */}
           <div className="lg:col-span-6 flex flex-col justify-center space-y-6">
             <h3 className="text-2xl font-extrabold text-white tracking-tight mb-2">
-              Mengapa Harus Bergabung?
+              Why Join SPE PEM Akamigas?
             </h3>
             <div className="space-y-6">
               {benefits.map((benefit, idx) => {
@@ -104,7 +103,7 @@ export default function JoinForm() {
                   <img 
                     src={SPE_PEM_AKAMIGAS_LOGO} 
                     alt="SPE PEM Akamigas Logo" 
-                    className="w-full h-full object-contain"
+                    className="w-full h-full object-contain" 
                   />
                 </div>
 
@@ -112,10 +111,10 @@ export default function JoinForm() {
                   FAST REGISTRATION PROCESS
                 </span>
                 <h3 className="text-2xl md:text-3xl font-black tracking-tight text-white mb-4">
-                  Daftar Instan via WhatsApp
+                  Instant Registration via WhatsApp
                 </h3>
                 <p className="text-[#BDE5FF]/75 text-sm max-w-sm mb-8 leading-relaxed">
-                  Tidak perlu mengisi formulir panjang. Klik tombol di bawah untuk langsung terhubung dengan Admin Pendaftaran kami untuk proses aktivasi cepat keanggotaan SPE Anda.
+                  No complex lengthy forms required. Click the button below to connect with our Chapter Registration Admin for fast membership activation.
                 </p>
 
                 <button
@@ -123,13 +122,13 @@ export default function JoinForm() {
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-[#FFEC89] via-[#7FFFD4] to-[#58C9F3] hover:brightness-110 text-[#061826] font-black text-sm md:text-base transition-all duration-300 shadow-xl shadow-[#FFEC89]/20 hover:-translate-y-1 cursor-pointer ring-1 ring-[#FFEC89]/40 group"
                 >
                   <MessageCircle className="w-5 h-5 fill-[#061826] text-[#061826] transition-transform group-hover:scale-110" />
-                  Hubungi Admin di WhatsApp
+                  <span>Contact Admin on WhatsApp</span>
                   <ArrowRight className="w-4 h-4 text-[#061826] transition-transform group-hover:translate-x-1" />
                 </button>
 
                 <div className="mt-6 flex items-center gap-2 text-xs text-[#BDE5FF]/70">
                   <CheckCircle2 className="w-4 h-4 text-[#7FFFD4]" />
-                  <span>Aktif 24/7 • Respons Cepat</span>
+                  <span>24/7 Active • Rapid Response</span>
                 </div>
               </div>
             </div>

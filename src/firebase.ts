@@ -1,35 +1,28 @@
 import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
 import { 
-  initializeFirestore, 
+  getFirestore, 
   collection, 
   doc, 
   getDoc, 
   getDocs, 
   addDoc, 
   updateDoc, 
-  setDoc,
+  setDoc, 
   deleteDoc, 
   query, 
   orderBy, 
   limit, 
   Timestamp 
 } from 'firebase/firestore';
+import firebaseConfig from '../firebase-applet-config.json';
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBsd2bCA14pEWeRJ8_dfWP8B72EidhAH8w",
-  authDomain: "optimistic-oasis-9cf5x.firebaseapp.com",
-  projectId: "optimistic-oasis-9cf5x",
-  storageBucket: "optimistic-oasis-9cf5x.firebasestorage.app",
-  messagingSenderId: "949148058618",
-  appId: "1:949148058618:web:3bc8e8dff6ee0b67a9da43",
-};
-
-// Initialize Firebase SDK with experimentalForceLongPolling to prevent iframe websocket blockages
+// Initialize Firebase App & Firestore using standard database ID
 const app = initializeApp(firebaseConfig);
-export const db = initializeFirestore(app, {
-  experimentalForceLongPolling: true,
-}, "ai-studio-0c9bac58-cea8-4b30-894a-d11d761b3f9c");
+export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+export const auth = getAuth(app);
 export { Timestamp };
+
 
 // Initial news to seed if DB is empty
 export const INITIAL_NEWS = [
